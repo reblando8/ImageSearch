@@ -29,9 +29,14 @@ void printMatchInfo(int row, int col, int height, int width);
 
 bool evaluateMatch(int matchCount, int mismatchCount,
  int totalPixels, int matchPercent);
-void searchImage(const PNG& mainImage, int mainHeight, int mainWidth,
- const PNG& srchImage, int srchHeight, int srchWidth, int matchPercent,
+
+void processMatch(PNG& mainImage, int row, int col,
+ int srchWidth, int srchHeight);
+
+void performSearch(const PNG& mainImage, const PNG& srchImage, int mainHeight,
+ int mainWidth, int srchHeight, int srchWidth, int matchPercent,
   int tolerance);
+
 /**
  * This is the top-level method that is called from the main method to 
  * perform the necessary image search operation. 
@@ -67,31 +72,40 @@ void imageSearch(const std::string& mainImageFile,
     setImageDimensions(mainImage, mainHeight, mainWidth);
     setImageDimensions(srchImage, srchHeight, srchWidth);
     
-    searchImage(mainImage, mainHeight, mainWidth, srchImage, srchHeight,
-        srchWidth, matchPercent, tolerance);
+    performSearch(mainImage, srchImage, mainHeight, mainWidth, srchHeight,
+     srchWidth, matchPercent, tolerance);
 }
 
-void searchImage(const PNG& mainImage, int mainHeight, int mainWidth,
- const PNG& srchImage, int srchHeight, int srchWidth, int matchPercent,
+void performSearch(const PNG& mainImage, const PNG& srchImage, int mainHeight,
+ int mainWidth, int srchHeight, int srchWidth, int matchPercent,
   int tolerance) {
+    PNG modifiableImage = mainImage;
     int numberOfMatches = 0;
     for (int row = 0; row <= mainHeight - srchHeight; row++) {
         for (int col = 0; col <= mainWidth - srchWidth; col++) {
-            Pixel avgColor = computeBackgroundPixel(mainImage,
-             srchImage, row, col, srchHeight, srchWidth);
-            std::pair<int, int> matchResult = checkMatch(mainImage, srchImage,
-             row, col, avgColor, tolerance);
+            Pixel avgColor = computeBackgroundPixel(modifiableImage, srchImage,
+             row, col, srchHeight, srchWidth);
+            std::pair<int, int> matchResult = checkMatch(modifiableImage,
+             srchImage, row, col, avgColor, tolerance);
 
             if (evaluateMatch(matchResult.first, matchResult.second,
              srchWidth * srchHeight, matchPercent)) {
-                printMatchInfo(row, col, srchHeight, srchWidth);
+                processMatch(modifiableImage, row, col, srchWidth, srchHeight);
                 numberOfMatches++;
-                col += srchWidth - 1;
+                col += srchWidth - 1; 
             }
         }
     }
     std::cout << "Number of matches: " << numberOfMatches << std::endl;
 }
+
+void processMatch(PNG& mainImage, int row, int col,
+ int srchWidth, int srchHeight) {
+    drawBox(mainImage, row, col, srchWidth, srchHeight);
+    printMatchInfo(row, col, srchHeight, srchWidth);
+}
+
+
 
 bool evaluateMatch(int matchCount, int mismatchCount,
  int totalPixels, int matchPercent) {
