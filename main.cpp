@@ -1,3 +1,4 @@
+// Copyright @Harry Reblando
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -10,12 +11,27 @@
 #include <numeric>
 #include <omp.h>
 #include "PNG.h"
-
+ 
 // It is ok to use the following namespace delarations in C++ source
 // files only. They must never be used in header files.
 using namespace std;
 using namespace std::string_literals;
 
+Pixel computeBackgroundPixel(const PNG& img1, const PNG& mask,
+ const int startRow, const int startCol, const int maxRow, const int maxCol);
+void drawBox(PNG& png, int row, int col, int width, int height);
+
+std::pair<int, int> checkMatch(const PNG& mainImage, const PNG& mask,
+ int startRow, int startCol, const Pixel& avgColor, int tolerance);
+
+void setImageDimensions(const PNG& image, int& height, int& width);
+void printMatchInfo(int row, int col, int height, int width);
+
+bool evaluateMatch(int matchCount, int mismatchCount,
+ int totalPixels, int matchPercent);
+void searchImage(const PNG& mainImage, int mainHeight, int mainWidth,
+ const PNG& srchImage, int srchHeight, int srchWidth, int matchPercent,
+  int tolerance);
 /**
  * This is the top-level method that is called from the main method to 
  * perform the necessary image search operation. 
@@ -43,8 +59,135 @@ void imageSearch(const std::string& mainImageFile,
                 const std::string& srchImageFile, 
                 const std::string& outImageFile, const bool isMask = true, 
                 const int matchPercent = 75, const int tolerance = 32) {
-    // Implement this method using various methods or even better
-    // use an object-oriented approach.
+    PNG mainImage, srchImage;
+    mainImage.load(mainImageFile);
+    srchImage.load(srchImageFile);
+
+    int mainHeight, mainWidth, srchHeight, srchWidth;
+    setImageDimensions(mainImage, mainHeight, mainWidth);
+    setImageDimensions(srchImage, srchHeight, srchWidth);
+    
+    searchImage(mainImage, mainHeight, mainWidth, srchImage, srchHeight,
+        srchWidth, matchPercent, tolerance);
+}
+
+void searchImage(const PNG& mainImage, int mainHeight, int mainWidth,
+ const PNG& srchImage, int srchHeight, int srchWidth, int matchPercent,
+  int tolerance) {
+    int numberOfMatches = 0;
+    for (int row = 0; row <= mainHeight - srchHeight; row++) {
+        for (int col = 0; col <= mainWidth - srchWidth; col++) {
+            Pixel avgColor = computeBackgroundPixel(mainImage,
+             srchImage, row, col, srchHeight, srchWidth);
+            std::pair<int, int> matchResult = checkMatch(mainImage, srchImage,
+             row, col, avgColor, tolerance);
+
+            if (evaluateMatch(matchResult.first, matchResult.second,
+             srchWidth * srchHeight, matchPercent)) {
+                printMatchInfo(row, col, srchHeight, srchWidth);
+                numberOfMatches++;
+                col += srchWidth - 1;
+            }
+        }
+    }
+    std::cout << "Number of matches: " << numberOfMatches << std::endl;
+}
+
+bool evaluateMatch(int matchCount, int mismatchCount,
+ int totalPixels, int matchPercent) {
+    float netMatch = matchCount - mismatchCount;
+    float requiredMatches = (totalPixels * matchPercent) / 100;
+    return netMatch > requiredMatches;
+}
+
+void printMatchInfo(int row, int col, int height, int width) {
+    std::cout << "sub-image matched at: " << row << ", " << col;
+    std::cout << ", " << row + height << ", ";
+    std::cout << col + width << std::endl;
+}
+
+void setImageDimensions(const PNG& image, int& height, int& width) {
+    height = image.getHeight();
+    width = image.getWidth();
+}
+
+bool isMatch(const Pixel& imgPixel, const Pixel& avgColor, int tolerance) {
+    return std::abs(imgPixel.color.red - avgColor.color.red) < tolerance &&
+            std::abs(imgPixel.color.green - avgColor.color.green) < tolerance &&
+            std::abs(imgPixel.color.blue - avgColor.color.blue) < tolerance;
+}
+
+bool isBlack(const Pixel& maskPixel) {
+    const Pixel Black{ .rgba = 0xff'00'00'00U };
+    return maskPixel.rgba == Black.rgba;
+}
+
+std::pair<int, int> checkMatch(const PNG& mainImage, const PNG& mask,
+    int startRow, int startCol, const Pixel& avgColor, int tolerance) {
+    int matchCount = 0;
+    int mismatchCount = 0;
+
+    for (int mRow = 0; mRow < mask.getHeight(); ++mRow) {
+        for (int mCol = 0; mCol < mask.getWidth(); ++mCol) {
+            Pixel maskPixel = mask.getPixel(mRow, mCol);
+            Pixel pixel = mainImage.getPixel(startRow + mRow, startCol + mCol);
+            bool black  = isBlack(maskPixel);
+            if (black) {  
+                if (isMatch(pixel, avgColor, tolerance)) {
+                    matchCount++;
+                } else {
+                    mismatchCount++;
+                }
+            } else {
+                if (!isMatch(pixel, avgColor, tolerance)) {
+                    matchCount++;
+                } else {
+                    mismatchCount++;
+                }
+            }
+        }
+    }
+    return {matchCount, mismatchCount};
+}
+
+Pixel computeBackgroundPixel(const PNG& img1, const PNG& mask,
+ const int startRow, const int startCol, 
+    const int maxRow, const int maxCol) {
+    const Pixel Black{ .rgba = 0xff'00'00'00U };
+    int red = 0, blue = 0, green = 0, count = 0;
+
+    for (int row = 0; (row < maxRow); row++) {
+        for (int col = 0; col < maxCol; col++) {
+            if (mask.getPixel(row, col).rgba == Black.rgba) {
+                const auto pix = img1.getPixel(row + startRow, col + startCol); 
+                     // Get corresponding pixel from the larger image
+                red += pix.color.red;
+                green += pix.color.green;
+                blue += pix.color.blue;
+                count++;
+            }
+        }
+    }
+
+    unsigned char avgRed = 0, avgGreen = 0, avgBlue = 0;
+    if (count > 0) {
+        avgRed = red / count;
+        avgGreen = green / count;
+        avgBlue = blue / count;
+    }
+    return { .color = {avgRed, avgGreen, avgBlue, 0} };
+}
+void drawBox(PNG& png, int row, int col, int width, int height) {
+    // Draw horizontal lines
+    for (int i = 0; (i < width); i++) {
+        png.setRed(row, col + i);
+        png.setRed(row + height, col + i);
+    }
+    // Draw vertical lines
+    for (int i = 0; (i < height); i++) {
+        png.setRed(row + i, col);
+        png.setRed(row + i, col + width);
+    }
 }
 
 /**
@@ -83,4 +226,4 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// End of source code
+// End of source code]

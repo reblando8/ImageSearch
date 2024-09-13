@@ -4,12 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${workspaceFolderBasename}",
-            "args": [],
+            "args": [
+                "images/TestImage_small.png",
+                "images/i_mask.png",
+                "result.png",
+                true
+            ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
