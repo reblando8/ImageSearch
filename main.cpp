@@ -81,6 +81,7 @@ void performSearch(const PNG& mainImage, const PNG& srchImage, int mainHeight,
   int tolerance) {
     PNG modifiableImage = mainImage;
     int numberOfMatches = 0;
+    #pragma omp parallel for reduction(+:numberOfMatches) 
     for (int row = 0; row <= mainHeight - srchHeight; row++) {
         for (int col = 0; col <= mainWidth - srchWidth; col++) {
             Pixel avgColor = computeBackgroundPixel(modifiableImage, srchImage,

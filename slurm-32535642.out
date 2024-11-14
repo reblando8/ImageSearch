@@ -1,0 +1,101 @@
+sub-image matched at: 568, 619, 602, 660
+sub-image matched at: 568, 818, 602, 859
+sub-image matched at: 568, 1020, 602, 1061
+sub-image matched at: 568, 1226, 602, 1267
+sub-image matched at: 569, 618, 603, 659
+sub-image matched at: 569, 818, 603, 859
+sub-image matched at: 569, 1020, 603, 1061
+sub-image matched at: 569, 1225, 603, 1266
+sub-image matched at: 570, 618, 604, 659
+sub-image matched at: 570, 819, 604, 860
+sub-image matched at: 570, 1225, 604, 1266
+sub-image matched at: 571, 619, 605, 660
+sub-image matched at: 571, 1226, 605, 1267
+sub-image matched at: 578, 1791, 612, 1832
+sub-image matched at: 579, 1791, 613, 1832
+sub-image matched at: 580, 1792, 614, 1833
+sub-image matched at: 582, 1996, 616, 2037
+sub-image matched at: 583, 1996, 617, 2037
+sub-image matched at: 584, 1996, 618, 2037
+sub-image matched at: 585, 818, 619, 859
+sub-image matched at: 585, 1996, 619, 2037
+sub-image matched at: 586, 817, 620, 858
+sub-image matched at: 586, 1020, 620, 1061
+sub-image matched at: 587, 618, 621, 659
+sub-image matched at: 587, 818, 621, 859
+sub-image matched at: 587, 1020, 621, 1061
+sub-image matched at: 587, 1225, 621, 1266
+sub-image matched at: 588, 618, 622, 659
+sub-image matched at: 588, 818, 622, 859
+sub-image matched at: 588, 1020, 622, 1061
+sub-image matched at: 588, 1225, 622, 1266
+sub-image matched at: 589, 618, 623, 659
+sub-image matched at: 589, 1225, 623, 1266
+sub-image matched at: 590, 1227, 624, 1268
+sub-image matched at: 590, 2198, 624, 2239
+sub-image matched at: 591, 2198, 625, 2239
+sub-image matched at: 592, 2198, 626, 2239
+sub-image matched at: 593, 2198, 627, 2239
+sub-image matched at: 596, 1792, 630, 1833
+sub-image matched at: 597, 1791, 631, 1832
+sub-image matched at: 598, 1791, 632, 1832
+sub-image matched at: 599, 1792, 633, 1833
+sub-image matched at: 600, 1996, 634, 2037
+sub-image matched at: 601, 1995, 635, 2036
+sub-image matched at: 602, 1995, 636, 2036
+sub-image matched at: 603, 1996, 637, 2037
+sub-image matched at: 604, 817, 638, 858
+sub-image matched at: 604, 1020, 638, 1061
+sub-image matched at: 605, 817, 639, 858
+sub-image matched at: 605, 1020, 639, 1061
+sub-image matched at: 606, 617, 640, 658
+sub-image matched at: 606, 817, 640, 858
+sub-image matched at: 606, 1020, 640, 1061
+sub-image matched at: 606, 1225, 640, 1266
+sub-image matched at: 607, 617, 641, 658
+sub-image matched at: 607, 1225, 641, 1266
+sub-image matched at: 608, 1225, 642, 1266
+sub-image matched at: 608, 2198, 642, 2239
+sub-image matched at: 609, 1227, 643, 1268
+sub-image matched at: 609, 2197, 643, 2238
+sub-image matched at: 610, 2197, 644, 2238
+sub-image matched at: 611, 2198, 645, 2239
+sub-image matched at: 615, 1790, 649, 1831
+sub-image matched at: 616, 1790, 650, 1831
+sub-image matched at: 617, 1791, 651, 1832
+sub-image matched at: 619, 1995, 653, 2036
+sub-image matched at: 620, 1994, 654, 2035
+sub-image matched at: 621, 1995, 655, 2036
+sub-image matched at: 622, 1995, 656, 2036
+sub-image matched at: 626, 2197, 660, 2238
+sub-image matched at: 627, 2196, 661, 2237
+sub-image matched at: 628, 2196, 662, 2237
+sub-image matched at: 629, 2197, 663, 2238
+sub-image matched at: 630, 2197, 664, 2238
+sub-image matched at: 816, 1209, 850, 1250
+sub-image matched at: 817, 1209, 851, 1250
+sub-image matched at: 567, 1022, 601, 1063
+Number of matches: 77
+	Command being timed: "./my_program images/MiamiMarcumCenter.png images/WindowPane_mask.png result.png true 50 64"
+	User time (seconds): 386.06
+	System time (seconds): 0.03
+	Percent of CPU this job got: 384%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:40.50
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 57368
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 2273
+	Voluntary context switches: 40
+	Involuntary context switches: 1783
+	Swaps: 0
+	File system inputs: 28984
+	File system outputs: 24
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
